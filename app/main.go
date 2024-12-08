@@ -39,12 +39,18 @@ func main() {
 		receivedData := string(buf[:size])
 		fmt.Printf("Received %d bytes from %s: %s\n", size, source, receivedData)
 
-		// Create an empty response
-		response := []byte{}
+		response := make([]byte, 12)
+		copy(response, buf[:size])
+		fmt.Println("The response is:", response)
+		response[2] = flipIndicator(response[2])
 
 		_, err = udpConn.WriteToUDP(response, source)
 		if err != nil {
 			fmt.Println("Failed to send response:", err)
 		}
 	}
+}
+
+func flipIndicator(indicator byte) byte {
+	return indicator | 0b10000000
 }
